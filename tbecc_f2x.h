@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /*
-/*		tinyBECC.h
+/*		tbecc_f2x.h			
 /*  
 /*	  	This file is part of TinyBECC.
 /*
@@ -23,21 +23,13 @@
 /*	  	$Id$
 /*
 /*****************************************************************************/
-#ifndef _TINY_BECC_H
-#define _TINY_BECC_H
+#ifndef _TBECC_F2X_H
+#define _TBECC_F2X_H
 
-#define uchar					unsigned char
-#define uint					unsigned int
-#define sint					signed int
+uint	tbecc_is_val_ui(uint sz, uint *op, uint ui);
+uint	tbecc_get_bitlength(uint sz, uint *op);
 
-#define LIMB_BIT_SIZE			32
-#define LIMB_SIZE				(LIMB_BIT_SIZE/8)
+void	tbecc_shift_left(uint amt, uint len, uint *dst, uint *src);
+void	tbecc_f2x_add(uint sz, uint *rop, uint *op1, uint *op2);
 
-#define	SUCCESS					0x00
-#define BAD_CERTIFICATE			0x01
-#define ERROR_VALUE				0xFFFFFFFF
-
-#define FALSE					0
-#define TRUE					1
-
-#endif /*	_TINY_BECC_H  */
+#endif  /* _TBECC_F2X_H */
