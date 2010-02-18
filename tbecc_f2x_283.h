@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /*
-/*		tbecc_f2x.h			
+/*		tbecc_f2x_283.h			
 /*  
 /*	  	This file is part of TinyBECC.
 /*
@@ -23,16 +23,13 @@
 /*	  	$Id$
 /*
 /*****************************************************************************/
-#ifndef _TBECC_F2X_H
-#define _TBECC_F2X_H
+#ifndef _TBECC_F2X_283_H
+#define _TBECC_F2X_283_H
 
-uint	tbecc_is_val_ui(uint sz, uint *op, uint ui);
-uint	tbecc_get_bitlength(uint sz, uint *op);
+#define SECT283_SIZE        9
 
-void	tbecc_shift_left(uint amt, uint sz, uint *rop, uint *op);
-void	tbecc_f2x_add(uint sz, uint *rop, uint *op1, uint *op2);
+void    _tbecc_f2x_283_mod(uint *rop, uint *op);
+void    tbecc_f2x_283_mul_mod(uint *rop, uint *op1, uint *op2);
+void    tbecc_f2x_283_inv(uint *rop, uint *op);
 
-void    _tbecc_f2x_mul(uint sz, uint *rop, uint *op1, uint *op2);
-void    _tbecc_f2x_inv(uint sz, uint *rop, uint *op1, uint *op2, uint *g1, uint *g2, uint *tmp);
-
-#endif  /* _TBECC_F2X_H */
+#endif  /* _TBECC_F2X_283_H */
