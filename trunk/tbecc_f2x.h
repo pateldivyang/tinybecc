@@ -26,10 +26,9 @@
 #ifndef _TBECC_F2X_H
 #define _TBECC_F2X_H
 
-uint	tbecc_is_val_ui(uint sz, uint *op, uint ui);
-uint	tbecc_get_bitlength(uint sz, uint *op);
 
-void	tbecc_shift_left(uint amt, uint sz, uint *rop, uint *op);
+#define tbecc_f2x_mulz	    tbecc_shift_left
+
 void	tbecc_f2x_add(uint sz, uint *rop, uint *op1, uint *op2);
 
 void    _tbecc_f2x_mul(uint sz, uint *rop, uint *op1, uint *op2);

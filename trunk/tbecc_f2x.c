@@ -25,6 +25,7 @@
 /*****************************************************************************/
 #include <memory.h>
 #include "tinyBECC.h"
+#include "tbecc_misc.h"
 #include "tbecc_f2x.h"
 
 uint	BIT[32] =
@@ -33,42 +34,7 @@ uint	BIT[32] =
 		0x10000,  0x20000,  0x40000,  0x80000,  0x100000,  0x200000,  0x400000,  0x800000,
 		0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0x20000000,0x40000000,0x80000000
 };
-/*****************************************************************************/
-/*
-/*	tbecc_is_val_ui()		checks to see if an array is = a single int val, 
-/*
-/*  Return Values	FALSE		on false 
-/*
-/*                  TRUE		on true
-/*
-/*****************************************************************************/
-uint		tbecc_is_val_ui(uint sz, uint *op, uint ui)
-{
-	uint    i;
-	if(op[0]!=ui)	return FALSE;
-	for(i=sz-1;i>0;i--){	if(op[i])	return FALSE;	}
-	return TRUE;
-}
 /****************************************************************************/
-/*
-/*	tbecc_get_bitlength()	returns the bit length floor(log_2(op))
-/*
-/* Return Values   floor(log_2(op))
-/*
-/*****************************************************************************/
-uint	tbecc_get_bitlength(uint sz, uint *op)
-{
-	sint	i, d;
-	uint	n;
-	if(sz == 0)		return 0;
-	d = sz-1;
-	while(op[d]==0){	--d;	}
-	if(d<0)			return 0;	
-	n = op[d];
-	i = 0;
-	while(n){	n>>=1;	++i;	}
-	return (d*(LIMB_BIT_SIZE)) + i;
-}/****************************************************************************/
 /*
 /*	tbecc_f2x_add()		This function adds two polynomials of the same length 
 /*                      in F_2[x], rop = op1 + op2 in F_2[x]
@@ -81,40 +47,8 @@ void	tbecc_f2x_add(uint sz, uint *rop, uint *op1, uint *op2)
 	do{
 		rop[i] = op1[i]^op2[i];
 	}while(++i!=0);
-}/****************************************************************************/
-/*
-/*	tbecc_shift_left()  This shifts the value to the left by amt many bits, or
-/*                      in terms of binary finite field this function performs 
-/*                      polynomial multiplication of op(x) in F_{2}[x] by x^amt  
-/*
-/*                      rop(x) =  x^{amt}*op(x).
-/*
-/*****************************************************************************/
-void	tbecc_shift_left(uint amt, uint sz, uint *rop, uint *op)
-{
-	unsigned int	big, r, l, size, n, t;
-
-	size = sz + (amt/LIMB_BIT_SIZE);
-	big = size - sz;
-	l = amt - big*LIMB_BIT_SIZE;
-	if(l==0){	
-		memcpy(rop+big, op, sizeof(uint)*sz);	
-		--big;
-		while(big!=-1){	rop[big--] = 0;	}
-		return;
-	}
-	r = LIMB_BIT_SIZE - l;
-	sz = sz-1;
-	n = 0;
-	rop[sz+big+1] = 0;
-	while(sz!=-1){
-		t = op[sz];			rop[sz+big] = (t<<l);
-		t>>=r;				rop[sz+big+1]|= t;
-		--sz;
-	}
-	--big;
-	while(big!=-1){	rop[big--] = 0;	}
-}/****************************************************************************/
+}
+/****************************************************************************/
 /*
 /*	tbecc_f2x_mul()	modular polynomial multiplication in F_2[x]/(f(x))
 /*                  rop(x) = op1(x)*op2(x) in F_2[x], where sz the length of 
@@ -136,7 +70,7 @@ void    _tbecc_f2x_mul(uint sz, uint *rop, uint *op1, uint *op2)
 		for(j=0;j<sz;j++){
 			if(BIT[k]&op1[j])	{	tbecc_f2x_add(sz+1, &rop[j], &rop[j], op2);	}
 		}
-		if(k!=(LIMB_BIT_SIZE-1)){	tbecc_shift_left(1, sz+ 1, op2, op2);	}
+		if(k!=(LIMB_BIT_SIZE-1)){	tbecc_f2x_mulz(1, sz+ 1, op2, op2);	}
 	}
 }
 /*****************************************************************************/
@@ -165,9 +99,9 @@ void    _tbecc_f2x_inv(uint sz, uint *rop, uint *op1, uint *op2, uint *g1, uint 
 			t = g1;	g1 = g2;	g2 = t;
 			j = -j;
 		}
-		tbecc_shift_left(j, sz, tmp, op2);
+		tbecc_f2x_mulz(j, sz, tmp, op2);
 		tbecc_f2x_add(sz, op1, op1, tmp);
-		tbecc_shift_left(j, sz, tmp, g2);
+		tbecc_f2x_mulz(j, sz, tmp, g2);
 		tbecc_f2x_add(sz, g1, g1, tmp);
 	};	
 	memcpy(rop, g1, sizeof(uint)*sz);
