@@ -1,41 +1,36 @@
-/*****************************************************************************/
-/*
-/*      tbecc_int.c
-/*  
-/*      This file is part of TinyBECC.
-/*
-/*      TinyBECC is free software: you can redistribute it and/or modify
-/*      it under the terms of the GNU General Public License as published by
-/*      the Free Software Foundation, either version 3 of the License, or
-/*      (at your option) any later version.
-/*
-/*      TinyBECC is distributed in the hope that it will be useful,
-/*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-/*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-/*      GNU General Public License for more details.
-/*
-/*      You should have received a copy of the GNU General Public License
-/*      along with TinyBECC.  If not, see <http://www.gnu.org/licenses/>.
-/*
-/*      $Author$
-/*      $Date$
-/*      $Revision$
-/*      $Id$
-/*
-/*****************************************************************************/
+/*****************************************************************************
+*
+*      tbecc_int.c
+*
+*      This file is part of TinyBECC.
+*
+*      TinyBECC is free software: you can redistribute it and/or modify
+*      it under the terms of the GNU General Public License as published by
+*      the Free Software Foundation, either version 3 of the License, or
+*      (at your option) any later version.
+*
+*      TinyBECC is distributed in the hope that it will be useful,
+*      but WITHOUT ANY WARRANTY; without even the implied warranty of
+*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*      GNU General Public License for more details.
+*
+*      You should have received a copy of the GNU General Public License
+*      along with TinyBECC.  If not, see <http://www.gnu.org/licenses/>.
+*
+*****************************************************************************/
 #include "tinyBECC.h"
 #include "tbecc_misc.h"
 #include "tbecc_int.h"
 #include <memory.h>
-/*****************************************************************************/
-/*
-/*    tbecc_int_cmp       compares two multi-precision integers.
-/*
-/*    RETURN VALUES:      0   if op1 = op2
-/*                        1   if (op1>op2)
-/*                       -1   if (op1<op2)
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    tbecc_int_cmp       compares two multi-precision integers.
+ *
+ *    RETURN VALUES:      0   if op1 = op2
+ *                        1   if (op1>op2)
+ *                       -1   if (op1<op2)
+ *
+ *****************************************************************************/
 int     tbecc_int_cmp(uint sz1, uint sz2, uint *op1, uint *op2)
 {
     if(sz1>sz2)            {    return 1;    }
@@ -49,13 +44,13 @@ int     tbecc_int_cmp(uint sz1, uint sz2, uint *op1, uint *op2)
     }
     return 0;
 }
-/*****************************************************************************/
-/*
-/*    _tbecc_int_add        adds two arrays of equal size, returns carry bit
-/*
-/*    RETURN VALUE:        carry bit
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    _tbecc_int_add        adds two arrays of equal size, returns carry bit
+ *
+ *    RETURN VALUE:        carry bit
+ *
+ *****************************************************************************/
 uint    _tbecc_int_add(int sz,  uint *rop,  uint *op1,  uint *op2)
 {
     uint    cy, x, y;
@@ -71,13 +66,13 @@ uint    _tbecc_int_add(int sz,  uint *rop,  uint *op1,  uint *op2)
     }while(++i!=0);
     return cy;
 }
-/*****************************************************************************/
-/*
-/*    _tbecc_int_add_n      adds two integer arrays
-/*    
-/*    RETURN VALUES:        length of the non-zero part of the array
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    _tbecc_int_add_n      adds two integer arrays
+ *
+ *    RETURN VALUES:        length of the non-zero part of the array
+ *
+ *****************************************************************************/
 uint    _tbecc_int_add_n(uint sz1, uint sz2, uint *rop, uint *op1, uint *op2)
 {
     uint    *pop1, y, cy, min, max;
@@ -95,13 +90,13 @@ uint    _tbecc_int_add_n(uint sz1, uint sz2, uint *rop, uint *op1, uint *op2)
     else    {    rop[min] = 0;    }
     return min;
 }
-/*****************************************************************************/
-/*
-/*  tbecc_int_add()   this function adds two (signed) integer arrays together
-/*
-/*  RETURN VALUE:       length of the non-zero part of the array
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *  tbecc_int_add()   this function adds two (signed) integer arrays together
+ *
+ *  RETURN VALUE:       length of the non-zero part of the array
+ *
+ *****************************************************************************/
 int    int_add(int sz1, int sz2, uint *rop, uint *op1, uint *op2)
 {
     int        rlen;
@@ -145,14 +140,14 @@ int    int_add(int sz1, int sz2, uint *rop, uint *op1, uint *op2)
     }
     return rlen;
 }
-/*****************************************************************************/
-/*
-/*    _tbecc_int_sub()  this function subtracts one array from another array
-/*                      of equal sizes storing the result in the result array
-/*
-/*    RETURN VALUE:     carry bit
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    _tbecc_int_sub()  this function subtracts one array from another array
+ *                      of equal sizes storing the result in the result array
+ *
+ *    RETURN VALUE:     carry bit
+ *
+ *****************************************************************************/
 int     _tbecc_int_sub(int sz,  uint *rop,  uint *op1,  uint *op2)
 {
      uint   cy, x, y;
@@ -167,17 +162,16 @@ int     _tbecc_int_sub(int sz,  uint *rop,  uint *op1,  uint *op2)
     }while(++i!=0);
     return cy;
 }
-/*****************************************************************************/
-/*
-/*    _mul                this is macro code for multiply.  It is strongly
-/*                        recommended that this be done natively on the 
-/*                        processor using assembly - see the x86 assembly 
-/*                        example.
-/*
-/*****************************************************************************/
-unsigned __int64  x;
+/*****************************************************************************
+ *
+ *    _mul                this is macro code for multiply.  It is strongly
+ *                        recommended that this be done natively on the
+ *                        processor using assembly - see the x86 assembly
+ *                        example.
+ *
+ *****************************************************************************/
 #define _mul(LOW, HIGH, OP1, OP2) {\
-    x = (unsigned __int64)OP1*(unsigned __int64)OP2;\
+    ulong x = (ulong)OP1*(ulong)OP2;\
     HIGH = (uint)(x>>32);\
     LOW = (uint)(x&0xFFFFFFFF);\
 }
@@ -193,14 +187,15 @@ unsigned __int64  x;
     __asm    pop            edx    \
     __asm    pop            eax    \
 }
-/*****************************************************************************/
-/*
-/*    tbecc_int_mul         multiplication of arrays of uintegers.
-/*                          rop = op1*op2
-/*                          rop!=op1 or op2
-/*                          sz1, sz2 > 0
-/*
-/*****************************************************************************/
+*/
+/*****************************************************************************
+ *
+ *    tbecc_int_mul         multiplication of arrays of uintegers.
+ *                          rop = op1*op2
+ *                          rop!=op1 or op2
+ *                          sz1, sz2 > 0
+ *
+ *****************************************************************************/
 void    _tbecc_int_mul( int sz1, int sz2, uint *rop, uint *op1,  uint *op2)
 {
     uint    z1, z2, cr, o1, o2;
@@ -225,13 +220,13 @@ void    _tbecc_int_mul( int sz1, int sz2, uint *rop, uint *op1,  uint *op2)
         }while(++j!=0);
     }while(++i!=0);
 }
-/*****************************************************************************/
-/*
-/*	tbecc_int_div_by_2()    this function divides an integer by 2
-/*
-/*	RETURN VALUES:          the length of the non-zero value in limbs
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *	tbecc_int_div_by_2()    this function divides an integer by 2
+ *
+ *	RETURN VALUES:          the length of the non-zero value in limbs
+ *
+ *****************************************************************************/
 uint    tbecc_int_div_by_2(uint sz, uint *rop, uint *op)
 {
 	int		i, size;
@@ -249,23 +244,23 @@ uint    tbecc_int_div_by_2(uint sz, uint *rop, uint *op)
 	return size;
 }
 
-/*****************************************************************************/
-/*
-/*	tbecc_int_mod_p	        this function implements the barret reduction for
-/*							for p, the order of the subgroup as specified in 
-/*                          Algorithm 2.14 in [1]
-/*
-/*	RESTRICTIONS:			op is allocated to size 2*sz and is
-/*							0 filled containing a value of lesser length, and
-/*							0 <= op < p^2
-/*                          mu = \floor(b^2k/p),
-/*                          qhat, q of length 2*(sz+1), and r of sz + 2.
-/*			
-/*							rop is of length sz
-/*
-/*	RETURN VALUES           the length of the non-zero part of the result
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *	tbecc_int_mod_p	        this function implements the barret reduction for
+ *							for p, the order of the subgroup as specified in
+ *                          Algorithm 2.14 in [1]
+ *
+ *	RESTRICTIONS:			op is allocated to size 2*sz and is
+ *							0 filled containing a value of lesser length, and
+ *							0 <= op < p^2
+ *                          mu = \floor(b^2k/p),
+ *                          qhat, q of length 2*(sz+1), and r of sz + 2.
+ *
+ *							rop is of length sz
+ *
+ *	RETURN VALUES           the length of the non-zero part of the result
+ *
+ *****************************************************************************/
 uint	tbecc_int_mod_p(uint sz, uint *rop, uint *op, uint *p, uint *mu, uint *q, uint *qhat, uint *r)
 {
 	uint	rsize;
@@ -290,9 +285,9 @@ uint	tbecc_int_mod_p(uint sz, uint *rop, uint *op, uint *p, uint *mu, uint *q, u
 	memcpy(rop, r, LIMB_SIZE*sz);
 	return tbecc_get_limbsize(sz, rop);
 }
-/*****************************************************************************/
-/*
-/*  [1] Guide to Elliptic Curve Cryptography, Hankerson, D., Menezes, A., 
-/*        Vanstone, S., Springer-Verlag, New York, 2004.
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *  [1] Guide to Elliptic Curve Cryptography, Hankerson, D., Menezes, A.,
+ *        Vanstone, S., Springer-Verlag, New York, 2004.
+ *
+ *****************************************************************************/
