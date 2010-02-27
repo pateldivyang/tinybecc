@@ -1,28 +1,23 @@
-/*****************************************************************************/
-/*
-/*      tbecc_f2x_283.c
-/*  
-/*      This file is part of TinyBECC.
-/*
-/*      TinyBECC is free software: you can redistribute it and/or modify
-/*      it under the terms of the GNU General Public License as published by
-/*      the Free Software Foundation, either version 3 of the License, or
-/*      (at your option) any later version.
-/*
-/*      TinyBECC is distributed in the hope that it will be useful,
-/*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-/*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-/*      GNU General Public License for more details.
-/*
-/*      You should have received a copy of the GNU General Public License
-/*      along with TinyBECC.  If not, see <http://www.gnu.org/licenses/>.
-/*
-/*      $Author$
-/*      $Date$
-/*      $Revision$
-/*      $Id$
-/*
-/*****************************************************************************/
+/*****************************************************************************
+*
+*      tbecc_f2x_283.c
+*
+*      This file is part of TinyBECC.
+*
+*      TinyBECC is free software: you can redistribute it and/or modify
+*      it under the terms of the GNU General Public License as published by
+*      the Free Software Foundation, either version 3 of the License, or
+*      (at your option) any later version.
+*
+*      TinyBECC is distributed in the hope that it will be useful,
+*      but WITHOUT ANY WARRANTY; without even the implied warranty of
+*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*      GNU General Public License for more details.
+*
+*      You should have received a copy of the GNU General Public License
+*      along with TinyBECC.  If not, see <http://www.gnu.org/licenses/>.
+*
+*****************************************************************************/
 #include <memory.h>
 #include "tinyBECC.h"
 #include "tbecc_misc.h"
@@ -30,17 +25,17 @@
 #include "tbecc_f2x_283.h"
 
 uint gPOLY283[SECT283_SIZE] =    { 0x000010A1, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x08000000    };
-/*****************************************************************************/
-/*
-/*    tbecc_f2x_283_mod()    Performs modular reduction by the polynomial reduce
-/*                      modulo f(x) = x^283 + x^12 + x^7 + x^5 + 1   
-/*    
-/*                      See [1], Algorithm 2.43, page 56
-/*
-/*    RESTRICTIONS:    deg(op(x)) < 565
-/*                    op IS DESTROYED
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    tbecc_f2x_283_mod()    Performs modular reduction by the polynomial reduce
+ *                      modulo f(x) = x^283 + x^12 + x^7 + x^5 + 1
+ *
+ *                      See [1], Algorithm 2.43, page 56
+ *
+ *    RESTRICTIONS:    deg(op(x)) < 565
+ *                    op IS DESTROYED
+ *
+ *****************************************************************************/
 void    _tbecc_f2x_283_mod(uint *rop, uint *op)
 {
     uint j, h1;
@@ -54,16 +49,16 @@ void    _tbecc_f2x_283_mod(uint *rop, uint *op)
     op[8] &=0x07FFFFFF;
     memcpy(rop, op, sizeof(uint)*SECT283_SIZE);
 }
-/*****************************************************************************/
-/*
-/*  tbecc_f2x_283_mul_mod() modular polynomial multiplication in F_2[x]/(f(x))
-/*                    rop(x) = op1(x)*op2(x) in F_2[x]/(f(x)), where both
-/*                    op1(x) and op2(x) < f(x) = x^283 + x^12 + x^7 + x^5 + 1 
-/*
-/*                    performs right-to-left comb method, see [1], Algorithm
-/*                    2.34, p 49
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *  tbecc_f2x_283_mul_mod() modular polynomial multiplication in F_2[x]/(f(x))
+ *                    rop(x) = op1(x)*op2(x) in F_2[x]/(f(x)), where both
+ *                    op1(x) and op2(x) < f(x) = x^283 + x^12 + x^7 + x^5 + 1
+ *
+ *                    performs right-to-left comb method, see [1], Algorithm
+ *                    2.34, p 49
+ *
+ *****************************************************************************/
 void    tbecc_f2x_283_mul_mod(uint *rop, uint *op1, uint *op2)
 {
     uint    tmp[(3*SECT283_SIZE)+2], *top2;
@@ -75,12 +70,12 @@ void    tbecc_f2x_283_mul_mod(uint *rop, uint *op1, uint *op2)
     _tbecc_f2x_mul(SECT283_SIZE, tmp, op1, top2);
     _tbecc_f2x_283_mod(rop, tmp);
 }
-/*****************************************************************************/
-/*
-/*    tbecc_f2x_283_inv()    perform a field inversion (expensive) in F_2[x]/f(x),
-/*                      where f(x) = x^283 + x^12 + x^7 + x^5 + 1   
-/*
-/*****************************************************************************/
+/*****************************************************************************
+ *
+ *    tbecc_f2x_283_inv()    perform a field inversion (expensive) in F_2[x]/f(x),
+ *                      where f(x) = x^283 + x^12 + x^7 + x^5 + 1
+ *
+ *****************************************************************************/
 void    tbecc_f2x_inv_283(uint *rop, uint *op)
 {
     uint    t[6*(SECT283_SIZE+1)], *u, *v, *g1, *g2;
@@ -98,12 +93,12 @@ void    tbecc_f2x_inv_283(uint *rop, uint *op)
 
     _tbecc_f2x_inv(SECT283_SIZE, rop, u, v, g1, g2, t);
 }
-/*****************************************************************************/
-/*
-/*  [1] Guide to Elliptic Curve Cryptography, Hankerson, D., Menezes, A., 
-/*        Vanstone, S., Springer-Verlag, New York, 2004.
-/*
-/*  [2] ECOH, Source Code submission, ecoh.c, Brown, D., 2009.
-/*      http://csrc.nist.gov/groups/ST/hash/sha-3/Round1/documents/ECOH.zip
-/*
-/******************************************************************************/
+/*****************************************************************************
+ *
+ *  [1] Guide to Elliptic Curve Cryptography, Hankerson, D., Menezes, A.,
+ *        Vanstone, S., Springer-Verlag, New York, 2004.
+ *
+ *  [2] ECOH, Source Code submission, ecoh.c, Brown, D., 2009.
+ *      http://csrc.nist.gov/groups/ST/hash/sha-3/Round1/documents/ECOH.zip
+ *
+ ******************************************************************************/
